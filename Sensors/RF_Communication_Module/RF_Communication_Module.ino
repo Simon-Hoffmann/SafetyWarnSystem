@@ -9,9 +9,10 @@
 
 #include "RFM66W.h"
 
+
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
-#VERSION  "1.0.0"
+#define VERSION  "1.0.0"
 
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
@@ -24,7 +25,7 @@
 *	@return none
 */
 void setup(void) {
-
+  
 }
 
 /**
@@ -36,3 +37,7 @@ void setup(void) {
 void loop(void) {
 
 }
+
+
+
+
