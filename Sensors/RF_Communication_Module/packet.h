@@ -23,6 +23,6 @@ struct swsPacket{
   size_t dataLength;
 };
 
-uint8_t getNextPacketID();
-bool serializeData(swsPacket packet, char (&payload)[100], uint8_t &sendSize);
+uint8_t packet_getNextPacketID();
+bool packet_serializeData(swsPacket packet, char (&payload)[100], uint8_t &sendSize);
 #endif

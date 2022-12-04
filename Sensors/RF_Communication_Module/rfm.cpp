@@ -14,52 +14,73 @@
 
 class rfm{
   private:
-  uint8_t sensorID = 0;
-  uint8_t baseStationID = 0;
 
-  int TRANSMITPERIOD = 200; //transmit a packet to gateway so often (in ms)
-  char payload[100];
-  char buff[20];
-  byte sendSize=0;
-  boolean requestACK = false;
+  struct rfm_client{
+    uint8_t sensorID = 0;
+    uint8_t baseStationID = 0;
+    int TRANSMITPERIOD = 200; //transmit a packet to gateway so often (in ms)
+    char payload[100];
+    char buff[20];
+    byte sendSize=0;
+    bool requestACK = false;
+    bool connected = false;
+    swsPacket packet;
+  };
 
-  swsPacket packet;
+  rfm_client clientSensor; 
 
   RFM69 radio;
 
-  bool rfm_transmit(swsPacket sendPacket, bool waitforACK){
-    if(serializeData(sendPacket, payload, sendSize)){
-      //send data
-      if(waitforACK){
-        //receiveData with timeout
-      }
-    }else{
-      return false;
-    }
+  bool rfm_transmit(){
+    packet_serializeData(clientSensor.packet, clientSensor.payload, clientSensor.sendSize);
+    //send data
     return true;
+  }
+
+  swsPacket rfm_receive(){
+    return clientSensor.packet;
   }
 
   public:
 
   void rfm_init(void){
-      radio.initialize(FREQUENCY, sensorID, NETWORKID);
+      radio.initialize(FREQUENCY, clientSensor.sensorID, NETWORKID);
       radio.encrypt(ENCRYPTKEY);
   }
 
   bool rfm_connect(uint8_t sensorType){
-    packet.packetID = getNextPacketID();
-    packet.packetType = CONNECT;
-    packet.idBase = 0;
-    packet.idSensor = 0;
-    packet.data[0] = sensorType;
-    packet.dataLength = 1;
+    clientSensor.packet.packetID = packet_getNextPacketID();
+    clientSensor.packet.packetType = CONNECT;
+    clientSensor.packet.idBase = 0;
+    clientSensor.packet.idSensor = 0;
+    clientSensor.packet.data[0] = sensorType;
+    clientSensor.packet.dataLength = 1;
 
-    if(rfm_transmit(packet, true)){
+    bool waitingforACK = true;
+    uint8_t connectRetries = 0;
+    swsPacket receivedPacket;
+    
+    while(waitingforACK){
+      if(!rfm_transmit()) return false;
+      delay(10);
 
-    }else{
-      return false;
+      receivedPacket = rfm_receive();
+      if(receivedPacket.packetType == CONNACK){
+        connectRetries = 0;
+        clientSensor.connected = true;
+        clientSensor.sensorID = receivedPacket.data[0];
+        clientSensor.baseStationID = receivedPacket.idBase;
+        clientSensor.packet.idBase = receivedPacket.idBase;
+        clientSensor.packet.idSensor = receivedPacket.data[0];
+        waitingforACK = false;
+      }
+      connectRetries++;
+      if(connectRetries == 10){
+        connectRetries = 0;
+        delay(1000);
+      }
     }
-    return true;
+    
   }
 
 };

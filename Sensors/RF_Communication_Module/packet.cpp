@@ -1,7 +1,7 @@
 #include "packet.h"
 
 
-bool serializeData(swsPacket packet, char (&payload)[100], uint8_t &sendSize){
+bool packet_serializeData(swsPacket packet, char (&payload)[100], uint8_t &sendSize){
   payload[0] = packet.idSensor;
   payload[1] = packet.idBase;
   payload[2] = packet.packetID;
@@ -30,7 +30,7 @@ bool serializeData(swsPacket packet, char (&payload)[100], uint8_t &sendSize){
   return true;
 }
 
-bool deserializeData(swsPacket &packet, char (&payload)[100], uint8_t receiveSize){
+bool packet_deserializeData(swsPacket &packet, char (&payload)[100], uint8_t receiveSize){
   packet.idSensor = payload[0];
   packet.idBase = payload[1];
   packet.packetID = payload[2];
@@ -54,7 +54,7 @@ bool deserializeData(swsPacket &packet, char (&payload)[100], uint8_t receiveSiz
   return true;
 }
 
-uint8_t getNextPacketID(){
+uint8_t packet_getNextPacketID(){
   static uint8_t packetID = 255;
   return packetID++;
 }
