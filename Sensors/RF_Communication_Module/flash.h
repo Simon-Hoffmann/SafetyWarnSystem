@@ -1,17 +1,18 @@
 /**
-*	@file 	flash.cpp
+*	@file 	flash.h
 *	@author Simon Hoffmann
-*	@brief	Flash implementation
+*	@brief	Flash Interface
 */
+
+#ifndef __FLASH_H_
+#define __FLASH_H_
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
-#include "flash.h"
+/*---------------------------- M A C R O S ------------------------------*/
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
-																														
-/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
-
+#endif
