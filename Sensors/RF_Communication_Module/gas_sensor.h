@@ -21,7 +21,8 @@
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
 void gas_sensor_init(void);
-void gas_sensor_read(void);
+void gas_sensor_check(void);
+void gas_sensor_send_data(void);
 
 #endif
 #endif

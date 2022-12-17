@@ -7,7 +7,6 @@
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
-#include <FreeRTOS.h>
 #include "sensor.h"
 
 
@@ -29,12 +28,15 @@ void setup(void) {
 }
 
 /**
-*	Main program loop not used because of FreeRTOS
+*	Main program loop 
 *
 *	@param 	none
 *	@return none
 */
-void loop(void) {}
+void loop(void) {
+  sensor_task();
+  //put sensor into sleep state for 1s
+}
 
 
 

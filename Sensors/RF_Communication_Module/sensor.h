@@ -30,6 +30,6 @@ extern volatile bool doit;
 */
 void sensor_init(void);
 
-void sensor_Task(void *pvParameters);
+void sensor_task(void);
 
 #endif
