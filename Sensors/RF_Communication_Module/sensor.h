@@ -9,7 +9,7 @@
 
 /*Sensor types: GAS_SENSOR  WATER_SENSOR*/
 
-#define GAS_SENSOR
+#define WATER_SENSOR
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
@@ -30,6 +30,13 @@ extern volatile bool doit;
 */
 void sensor_init(void);
 
+
+/**
+*	Main sensor loop
+*	
+*	@param 	none
+*	@return none
+*/
 void sensor_task(void);
 
 #endif

@@ -20,7 +20,21 @@
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
+/**
+*	Initializes MQ135, MQ5 and Buzzer and sets buzzer off
+*
+*	@param 	none
+*	@return none
+*/
 void gas_sensor_init(void);
+
+/**
+*	Does nothing if sensor is switched off for the duration
+* Otherwise checks if values are in normal range, if not, starts the alarm and notifies the user
+*
+*	@param 	none
+*	@return none
+*/
 void gas_sensor_check(void);
 void gas_sensor_send_data(void);
 

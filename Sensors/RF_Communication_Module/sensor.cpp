@@ -13,6 +13,7 @@
 #include "sensor.h"
 #include "led.h"
 #include "gas_sensor.h"
+#include "water_sensor.h"
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
@@ -26,6 +27,13 @@ void sensor_button_pressed(void);
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
+/**
+*	Initialises all hardware for the sensors
+*
+* @details Depending on the defined sensor, the relevant hardware is initialised
+*	@param 	none
+*	@return none
+*/
 void sensor_init(void){
   //Initialize Button Interrupt
   pinMode(BUTTON_PRESS_PIN, INPUT_PULLUP);
@@ -34,36 +42,54 @@ void sensor_init(void){
     gas_sensor_init();
   #endif
 
+  #ifdef WATER_SENSOR
+    water_sensor_init();
+  #endif
+
   //Initialise LED
   led_init();
 }
 
+/**
+*	Main sensor loop
+*	
+*	@param 	none
+*	@return none
+*/
 void sensor_task(void){
   static uint32_t lastDataSent_s = 0;
+
+  /*---- Check sensor values for warnings ----*/
 
   #ifdef GAS_SENSOR
   gas_sensor_check();
   #endif
 
+  #ifdef WATER_SENSOR
+  water_sensor_check();
+  #endif
 
-  /*Button press check*/
+  /*---- Button press check ----*/
   sensor_button_pressed();
 
-  //send data every 10min
+    /*---- Send data every 10min ----*/
   if(lastDataSent_s >= 600){
     #ifdef GAS_SENSOR
     gas_sensor_send_data();
     #endif
-    //send gas sensor data
+
+    #ifdef WATER_SENSOR
+    water_sensor_send_data();
+    #endif
   }
   //send data if there is any to send
   lastDataSent_s++;
 }
 
+
 /**
 *	Checks how long the button is pressed:
 *
-*	-	<5s If sensor is of type Gas sensor, the buzzer is turned off if active
 *	-	>5s The sensor is reset
 *	.
 *	@param 	none

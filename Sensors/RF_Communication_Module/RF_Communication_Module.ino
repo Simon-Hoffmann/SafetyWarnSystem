@@ -36,6 +36,7 @@ void setup(void) {
 void loop(void) {
   sensor_task();
   //put sensor into sleep state for 1s
+  delay(1000);
 }
 
 
