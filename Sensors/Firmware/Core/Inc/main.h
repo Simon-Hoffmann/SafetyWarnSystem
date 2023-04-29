@@ -36,7 +36,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern SPI_HandleTypeDef hspi2;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -65,18 +65,24 @@ void Error_Handler(void);
 #define USART_RX_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define SCK___RFM69W_Pin GPIO_PIN_13
-#define SCK___RFM69W_GPIO_Port GPIOB
-#define MISO___RFM69W_Pin GPIO_PIN_14
-#define MISO___RFM69W_GPIO_Port GPIOB
-#define MOSI___RFM69W_Pin GPIO_PIN_15
-#define MOSI___RFM69W_GPIO_Port GPIOB
-#define Buzzer___Water_sensor_Pin GPIO_PIN_10
-#define Buzzer___Water_sensor_GPIO_Port GPIOA
-#define MQ_5___Door_sensor_Pin GPIO_PIN_11
-#define MQ_5___Door_sensor_GPIO_Port GPIOA
-#define MQ_135_Pin GPIO_PIN_12
-#define MQ_135_GPIO_Port GPIOA
+#define SPI_SCK_Pin GPIO_PIN_13
+#define SPI_SCK_GPIO_Port GPIOB
+#define SPI_MISO_Pin GPIO_PIN_14
+#define SPI_MISO_GPIO_Port GPIOB
+#define SPI_MOSI_Pin GPIO_PIN_15
+#define SPI_MOSI_GPIO_Port GPIOB
+#define DIO0_Interrupt_Pin GPIO_PIN_6
+#define DIO0_Interrupt_GPIO_Port GPIOC
+#define CUSTOMNAME_Pin GPIO_PIN_9
+#define CUSTOMNAME_GPIO_Port GPIOC
+#define Sensor0_Pin GPIO_PIN_9
+#define Sensor0_GPIO_Port GPIOA
+#define Sensor1_Pin GPIO_PIN_10
+#define Sensor1_GPIO_Port GPIOA
+#define Sensor2_Pin GPIO_PIN_11
+#define Sensor2_GPIO_Port GPIOA
+#define Sensor3_Pin GPIO_PIN_12
+#define Sensor3_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14

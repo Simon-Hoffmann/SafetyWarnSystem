@@ -1,13 +1,18 @@
 /*
- * rfm69w.h
+ * RFM69W.h
  *
- *  Created on: Feb 7, 2023
+ *  Created on: 26 Apr 2023
  *      Author: Simon
  */
 
-#ifndef INC_COMMUNICATION_RFM69W_H_
-#define INC_COMMUNICATION_RFM69W_H_
+#include <stdint.h>
+#include "packet.h"
+
+#ifndef __RFM_h__
+#define __RFM_h__
 
 
 
-#endif /* INC_COMMUNICATION_RFM69W_H_ */
+void RFM69_Running(uint8_t mode,uint8_t WorkStatus,uint8_t ParaChangeFlag,uint8_t *TxFlag,uint8_t *RxFlag,uint8_t *RSSI, DataBuffer* data);
+
+#endif

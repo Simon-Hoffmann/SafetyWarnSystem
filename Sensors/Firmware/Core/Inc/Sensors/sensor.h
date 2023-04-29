@@ -1,15 +1,17 @@
 /**
-*	@file 	water_sensor.h
+*	@file 	sensor.h
 *	@author Simon Hoffmann
-*	@brief	Water sensor Interface
+*	@brief	Sensor Interface
 */
 
-#ifndef __WATER_SENSOR_H_
-#define __WATER_SENSOR_H_
+#ifndef __SENSOR_H_
+#define __SENSOR_H_
 
-#include "sensor.h"
+/*Sensor types: GAS_SENSOR  WATER_SENSOR*/
 
-#ifdef WATER_SENSOR
+#define WATER_SENSOR
+
+#include "stdbool.h"
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
@@ -17,25 +19,26 @@
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
+extern volatile bool doit;
+
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
 /**
-* Initializes water sensor
+*	Initialises all hardware for the sensors
 *
+* @details Depending on the defined sensor, the relevant hardware is initialised
 *	@param 	none
 *	@return none
 */
-void water_sensor_init(void);
+void sensor_init(void);
+
 
 /**
-* Checks if water sensor is submerged, if it is, send data
+*	Main sensor loop
 *
 *	@param 	none
 *	@return none
 */
-void water_sensor_check(void);
+void sensor_task(void);
 
-void water_sensor_send_data(void);
-
-#endif
 #endif
