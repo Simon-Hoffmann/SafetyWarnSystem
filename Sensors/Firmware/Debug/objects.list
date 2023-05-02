@@ -1,7 +1,7 @@
 "./Core/Src/Communication/RFM69W.o"
 "./Core/Src/Communication/SPI.o"
 "./Core/Src/Communication/packet.o"
-"./Core/Src/Communication/registers.o"
+"./Core/Src/Communication/rfm_hal.o"
 "./Core/Src/Main Module/flash.o"
 "./Core/Src/Main Module/led.o"
 "./Core/Src/Sensors/door_sensor.o"

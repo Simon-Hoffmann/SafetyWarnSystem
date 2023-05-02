@@ -22,6 +22,13 @@ void SPICmd8bit(uint8_t WrPara)
 	HAL_SPI_Transmit(&hspi2, &WrPara, 1, HAL_MAX_DELAY);
 }
 
+uint8_t SPI_RX_TX(uint8_t WrPara)
+{
+	uint8_t receive;
+	HAL_SPI_TransmitReceive(&hspi2, &WrPara, &receive, 1, HAL_MAX_DELAY);
+	return receive;
+}
+
 /**********************************************************
 **Name:     SPIRead8bit
 **Function: SPI Read one byte

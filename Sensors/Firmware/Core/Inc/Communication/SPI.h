@@ -14,6 +14,7 @@
 void SPICmd8bit(uint8_t WrPara);
 uint8_t SPIRead(uint8_t adr);
 uint8_t SPIRead8bit(void);
+uint8_t SPI_RX_TX(uint8_t WrPara);
 void SPIWrite(unsigned int WrPara);
 void SPIBurstRead(uint8_t adr, uint8_t *ptr, uint8_t length);
 void BurstWrite(uint8_t adr, uint8_t *ptr, uint8_t length);

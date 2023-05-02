@@ -71,8 +71,10 @@ void Error_Handler(void);
 #define SPI_MISO_GPIO_Port GPIOB
 #define SPI_MOSI_Pin GPIO_PIN_15
 #define SPI_MOSI_GPIO_Port GPIOB
-#define DIO0_Interrupt_Pin GPIO_PIN_6
-#define DIO0_Interrupt_GPIO_Port GPIOC
+#define SPI_DI0_Pin GPIO_PIN_6
+#define SPI_DI0_GPIO_Port GPIOC
+#define SPI_CS_Pin GPIO_PIN_7
+#define SPI_CS_GPIO_Port GPIOC
 #define CUSTOMNAME_Pin GPIO_PIN_9
 #define CUSTOMNAME_GPIO_Port GPIOC
 #define Sensor0_Pin GPIO_PIN_9
