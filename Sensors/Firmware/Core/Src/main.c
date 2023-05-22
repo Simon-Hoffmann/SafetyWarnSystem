@@ -63,6 +63,9 @@ static void MX_TIM1_Init(void);
 
 /* USER CODE END 0 */
 
+#define Send 0
+#define Receive 1
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -102,32 +105,67 @@ int main(void)
     packet.idSensor = 2;
     packet.packetID = packet.packetID + 1;
     packet.packetType = SEND;
-    smokeData.GasDetectionTimeout_Minutes = 10;
-    smokeData.GasSensor = 500;
-    smokeData.SmokeSensor = 1000;
-    smokeData.SensorType = 2;
-    smokeData.Temperature = 52;
+//    smokeData.GasDetectionTimeout_Minutes = 10;
+//    smokeData.GasSensor = 500;
+//    smokeData.SmokeSensor = 1000;
+//    smokeData.SensorType = 2;
+//    smokeData.Temperature = 52;
+
+#if Send
     memcpy(packet.data, &smokeData, 8);
 
     packet_serializeData(&packet, &buffer);
+#endif
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bool RFM_active = false;
+#if Send
+  RFM_active = RFM69_initialize(RF69_868MHZ, 1, 0);
 
-  RFM_active = RFM69_initialize(RF69_868MHZ, 0, 0);
+  while(!RFM_active){
+	  RFM_active = RFM69_initialize(RF69_868MHZ, 1, 0);
+	  HAL_Delay(1000);
+  }
+#endif
+#if Receive
+  RFM_active = RFM69_initialize(RF69_868MHZ, 2, 1);
 
+  while(!RFM_active){
+	  RFM_active = RFM69_initialize(RF69_868MHZ, 2, 1);
+	  HAL_Delay(1000);
+  }
+#endif
+
+#if Receive
+  RFM69_setMode(RF69_MODE_RX);
+#endif
   while (1)
   {
     /* USER CODE END WHILE */
 	  if(RFM_active){
+#if Send
 		  RFM69_setMode(RF69_MODE_RX);
 		  if(RFM69_canSend()){
 			  RFM69_setMode(RF69_MODE_TX);
-			  RFM69_send(1, buffer.data, buffer.size, false);
+			  RFM69_send(RF69_BROADCAST_ADDR, buffer.data, buffer.size, false);
+			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
 		  }
-		  HAL_Delay(5000);
+		  RFM69_setMode(RF69_MODE_RX);
+		  HAL_Delay(2500);
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+		  HAL_Delay(2500);
+#endif
+
+#if Receive
+		  if(RFM69_receive(buffer.data, buffer.size)){
+			  packet_deserializeData(&packet, &buffer);
+			  memcpy(&smokeData, packet.data, 8);
+		  }
+		  HAL_Delay(500);
+#endif
 	  }
     /* USER CODE BEGIN 3 */
   }

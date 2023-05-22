@@ -60,6 +60,7 @@ extern void Timeout_SetTimeout1(uint16_t); // function for timeout handling, set
 bool RFM69_initialize(uint8_t freqBand, uint8_t nodeID, uint16_t networkID);
 bool RFM69_canSend();
 void RFM69_send(uint8_t toAddress, const void* buffer, uint8_t bufferSize, bool requestACK);
+bool RFM69_receive(uint8_t* buffer, uint8_t bufferSize);
 void RFM69_setMode(uint8_t newMode);
 
 

@@ -259,6 +259,47 @@ void RFM69_send(uint8_t toAddress, const void* buffer, uint8_t bufferSize, bool 
   RFM69_sendFrame(toAddress, buffer, bufferSize, requestACK, false);
 }
 
+bool RFM69_receive(uint8_t* buffer, uint8_t bufferSize){
+	if (_mode == RF69_MODE_RX && (RFM69_readReg(REG_IRQFLAGS2) & RF_IRQFLAGS2_PAYLOADREADY))
+	  {
+	    uint8_t CTLbyte;
+	    //rssi = RFM69_readRSSI(true);
+	    RFM69_setMode(RF69_MODE_STANDBY);
+	    RFM69_select();
+	    SPI_transfer8(REG_FIFO & 0x7F);
+	    payloadLen = SPI_transfer8(0);
+	    payloadLen = payloadLen > 66 ? 66 : payloadLen; // precaution
+	    targetID = SPI_transfer8(0);
+	    if(!(_promiscuousMode || targetID == _address || targetID == RF69_BROADCAST_ADDR) // match this node's address, or broadcast address or anything in promiscuous mode
+	       || payloadLen < 3) // address situation could receive packets that are malformed and don't fit this libraries extra fields
+	    {
+	      payloadLen = 0;
+	      RFM69_unselect();
+	      RFM69_receiveBegin();
+	      return false;
+	    }
+
+	    bufferSize = payloadLen - 3;
+	    senderID = SPI_transfer8(0);
+	    CTLbyte = SPI_transfer8(0);
+
+	    ACK_RECEIVED = CTLbyte & RFM69_CTL_SENDACK; // extract ACK-received flag
+	    ACK_Requested = CTLbyte & RFM69_CTL_REQACK; // extract ACK-requested flag
+
+	    //interruptHook(CTLbyte);     // TWS: hook to derived class interrupt function
+
+	    for (uint8_t i = 0; i < bufferSize; i++)
+	    {
+	    	buffer[i] = SPI_transfer8(0);
+	    }
+	    if (bufferSize < RF69_MAX_DATA_LEN) buffer[bufferSize] = 0; // add null at end of string
+	    RFM69_unselect();
+	    RFM69_setMode(RF69_MODE_RX);
+	    return true;
+	  }
+}
+
+
 // to increase the chance of getting a packet across, call this function instead of send
 // and it handles all the ACK requesting/retrying for you :)
 // The only twist is that you have to manually listen to ACK requests on the other side and send back the ACKs
@@ -320,7 +361,7 @@ static void RFM69_sendFrame(uint8_t toAddress, const void* buffer, uint8_t buffe
 {
   RFM69_setMode(RF69_MODE_STANDBY); // turn off receiver to prevent reception while filling fifo
   while ((RFM69_readReg(REG_IRQFLAGS1) & RF_IRQFLAGS1_MODEREADY) == 0x00); // wait for ModeReady
-  RFM69_writeReg(REG_DIOMAPPING1, RF_DIOMAPPING1_DIO0_00); // DIO0 is "Packet Sent"
+  //RFM69_writeReg(REG_DIOMAPPING1, RF_DIOMAPPING1_DIO0_00); // DIO0 is "Packet Sent"
   if (bufferSize > RF69_MAX_DATA_LEN) bufferSize = RF69_MAX_DATA_LEN;
 
   // control byte
@@ -329,6 +370,9 @@ static void RFM69_sendFrame(uint8_t toAddress, const void* buffer, uint8_t buffe
     CTLbyte = RFM69_CTL_SENDACK;
   else if (requestACK)
     CTLbyte = RFM69_CTL_REQACK;
+
+  if (toAddress > 0xFF) CTLbyte |= (toAddress & 0x300) >> 6; //assign last 2 bits of address if > 255
+  if (_address > 0xFF) CTLbyte |= (_address & 0x300) >> 8;   //assign last 2 bits of address if > 255
 
   // write to FIFO
   RFM69_select();
@@ -344,8 +388,10 @@ static void RFM69_sendFrame(uint8_t toAddress, const void* buffer, uint8_t buffe
 
   // no need to wait for transmit mode to be ready since its handled by the radio
   RFM69_setMode(RF69_MODE_TX);
-  Timeout_SetTimeout1(RF69_TX_LIMIT_MS);
-  while (((RFM69_ReadDIO0Pin()) == 0 && !Timeout_IsTimeout1())); // wait for DIO0 to turn HIGH signalling transmission finish
+
+  while((RFM69_readReg(REG_IRQFLAGS2) & RF_IRQFLAGS2_FIFONOTEMPTY) == 0x00);	//Checks if data is in RFM fifo
+
+  while ((RFM69_readReg(REG_IRQFLAGS2) & RF_IRQFLAGS2_PACKETSENT) == 0x00); // wait for PacketSent
   //while (RFM69_readReg(REG_IRQFLAGS2) & RF_IRQFLAGS2_PACKETSENT == 0x00); // wait for ModeReady
   RFM69_setMode(RF69_MODE_STANDBY);
 }
