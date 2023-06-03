@@ -1,15 +1,20 @@
 /**
-*	@file 	flash.cpp
+*	@file 	debug.h
 *	@author Simon Hoffmann
-*	@brief	Flash implementation
+*	@brief	Debug Interface
 */
+
+#ifndef __DEBUG_H_
+#define __DEBUG_H_
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
-#include "flash.h"
+/*---------------------------- M A C R O S ------------------------------*/
+
+#define DEBUG 
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
-																														
-/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
+
+#endif
