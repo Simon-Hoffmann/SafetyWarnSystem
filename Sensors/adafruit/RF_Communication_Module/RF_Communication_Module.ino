@@ -28,7 +28,9 @@ void setup(void) {
   #ifdef DEBUG
     Serial.begin(115200);
   #endif
+  #ifndef HARDWARE_DEBUG
   rfm_init();
+  #endif
   sensor_init();
 }
 

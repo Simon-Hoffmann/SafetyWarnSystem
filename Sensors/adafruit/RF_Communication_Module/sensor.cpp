@@ -64,7 +64,9 @@ void sensor_init(void){
   Serial.println("Sensor initialization success");
   #endif
 
+  #ifndef HARDWARE_DEBUG
   sensor_connectBase();
+  #endif
 }
 
 /**
@@ -96,8 +98,23 @@ void sensor_connectBase(void){
       sensorID = packet.idSensor;
       baseID = packet.idBase;
     }
-    delay(60000);
+    #ifdef DEBUG
+    Serial.println("Connection to base station could not be established, trying again in 1min");
+    #endif
+    #ifdef GAS_SENSOR
+    //The gas sensor should still be able to have its normal function of detection even when not connected with the base station
+      int timer = 0;
+      while(timer < 6000){
+          gas_sensor_check_no_connection();
+          delay(10);
+          timer++;
+      }
+      
+    #else
+      delay(60000);
+    #endif
   }
+
 }
 
 /**

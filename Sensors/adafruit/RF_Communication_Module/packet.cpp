@@ -1,7 +1,7 @@
 #include "packet.h"
 
 
-bool packet_serializeData(swsPacket *packet, char (&payload)[100], uint8_t *sendSize){
+bool packet_serializeData(swsPacket *packet, char *payload, uint8_t *sendSize){
   payload[0] = packet->idSensor;
   payload[1] = packet->idBase;
   payload[2] = packet->packetID;

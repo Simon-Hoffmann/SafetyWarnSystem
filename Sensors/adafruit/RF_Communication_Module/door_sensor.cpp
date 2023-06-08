@@ -47,6 +47,9 @@ void door_sensor_init(void){
 */
 bool door_sensor_check(void){
     if(door_sensor_read_warning()){
+        #ifdef DEBUG
+          Serial.println("door_sensor_read_warning");
+        #endif
         door_sensor_send_data();
         return true;
     }
@@ -67,9 +70,11 @@ void door_sensor_send_data(void){
   packet.data[0] = 3;
   packet.data[1] = door_sensor_val;
 
+  #ifndef HARDWARE_DEBUG
   if(!rfm_send(&packet)){
     sensor_reset();
   }
+  #endif
 }
 
 /**

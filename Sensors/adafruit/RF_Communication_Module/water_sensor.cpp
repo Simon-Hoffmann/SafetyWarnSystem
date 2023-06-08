@@ -48,6 +48,9 @@ void water_sensor_init(void){
 */
 bool water_sensor_check(void){
   if(water_sensor_read_warning()){
+        #ifdef DEBUG
+        Serial.println("water_sensor_read_warning");
+      #endif
       water_sensor_send_data();
       return true;
   }
@@ -68,9 +71,11 @@ void water_sensor_send_data(void){
   packet.data[0] = 1;
   packet.data[1] = water_sensor_val;
 
+  #ifndef HARDWARE_DEBUG
   if(!rfm_send(&packet)){
     sensor_reset();
   }
+  #endif
 }
 
 /**

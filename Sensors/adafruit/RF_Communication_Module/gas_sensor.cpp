@@ -65,7 +65,33 @@ bool gas_sensor_check(void){
     alarmOffTime_s--;
   }else{
     if(gas_sensor_read_warning()){
+      #ifdef DEBUG
+        Serial.println("gas_sensor_read_warning");
+      #endif
       dataReceived = false;
+      gas_sensor_alarm();
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+*	Does nothing if sensor is switched off for the duration
+* Otherwise checks if values are in normal range, if not, starts the alarm 
+*
+*	@param 	none
+*	@return none
+*/
+bool gas_sensor_check_no_connection(void){
+  if(alarmOffTime_s){
+    alarmOffTime_s--;
+  }else{
+    if(gas_sensor_read_warning()){
+      #ifdef DEBUG
+        Serial.println("gas_sensor_read_warning");
+      #endif
+      dataReceived = true;
       gas_sensor_alarm();
       return true;
     }
@@ -96,6 +122,9 @@ void gas_sensor_alarm(void){
     if((digitalRead(BUTTON_PRESS_PIN) == 0) || (alarmTime > 600)){
       buzzer = false;
       alarmOffTime_s = 600;
+      #ifdef DEBUG
+        Serial.println("Gas sensor alarm turned off");
+      #endif
     }
     delay(500);
     digitalWrite(BUZZER_PIN, LOW);
@@ -125,9 +154,11 @@ void gas_sensor_send_data(void){
   packet.data[4] = mq135_val >> 8;
   packet.data[5] = (uint8_t) mq135_val;
 
+  #ifndef HARDWARE_DEBUG
   if(rfm_send(&packet)){
     dataReceived = true;
   }
+  #endif
 }
 
 /**
@@ -139,11 +170,12 @@ void gas_sensor_send_data(void){
 bool gas_sensor_read_warning(void){
   mq135_val = analogRead(MQ135_PIN);
   mq5_val = analogRead(MQ5_PIN);
-
-  if(mq135_val > 800){
-    return true;
-  }
-  if(mq5_val > 250){
+  #ifdef DEBUG
+    Serial.print("MQ135: "); Serial.println(mq135_val);
+    Serial.print("MQ5: "); Serial.println(mq5_val);
+  #endif
+      
+  if((mq135_val > 800) || (mq5_val > 800)){
     return true;
   }
   return false;

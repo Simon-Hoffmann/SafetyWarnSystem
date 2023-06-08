@@ -38,6 +38,15 @@ void gas_sensor_init(void);
 bool gas_sensor_check(void);
 
 /**
+*	Does nothing if sensor is switched off for the duration
+* Otherwise checks if values are in normal range, if not, starts the alarm 
+*
+*	@param 	none
+*	@return none
+*/
+bool gas_sensor_check_no_connection(void);
+
+/**
 * Sets the packet content and sends data over rfm
 *
 *	@param 	none

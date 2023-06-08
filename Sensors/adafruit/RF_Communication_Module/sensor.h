@@ -7,9 +7,9 @@
 #ifndef __SENSOR_H_
 #define __SENSOR_H_
 
-/*Sensor types: GAS_SENSOR  WATER_SENSOR*/
+/*Sensor types: GAS_SENSOR  WATER_SENSOR  DOOR_SENSOR*/
 
-#define GAS_SENSOR
+#define DOOR_SENSOR
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 

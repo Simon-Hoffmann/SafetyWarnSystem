@@ -81,7 +81,8 @@ bool rfm_send(swsPacket* packet){
     count++;
 
     #ifdef DEBUG
-    Serial.print("Sending "); Serial.println(payload);
+    Serial.println("Sending Length:"); 
+    Serial.println(sendLength); 
     #endif
 
     rf69.send((uint8_t *)payload, sendLength);
@@ -115,14 +116,14 @@ bool rfm_send(swsPacket* packet){
             break;
         }
       } 
+    } 
       if(count >= 10){
         #ifdef DEBUG
-        Serial.print("No reply received");
+        Serial.println("No reply received");
         #endif
 
         return false;
       }
-    } 
   }
 }
 
