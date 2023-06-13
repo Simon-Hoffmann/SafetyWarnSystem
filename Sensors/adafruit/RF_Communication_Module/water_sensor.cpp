@@ -20,7 +20,7 @@
 
 #define WATER_SENSOR_PIN 12
 
-PinStatus water_sensor_val;
+uint8_t water_sensor;
 static struct swsPacket packet;
 													
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
@@ -69,7 +69,7 @@ void water_sensor_send_data(void){
   packet.idBase = baseID;
   packet.dataLength = 2;
   packet.data[0] = 1;
-  packet.data[1] = water_sensor_val;
+  packet.data[1] = water_sensor;
 
   #ifndef HARDWARE_DEBUG
   if(!rfm_send(&packet)){
@@ -85,8 +85,9 @@ void water_sensor_send_data(void){
 *	@return 1 if values are dangerous, otherwise 0 if all good
 */
 bool water_sensor_read_warning(void){
-  water_sensor_val = digitalRead(WATER_SENSOR_PIN);
-  return water_sensor_val == LOW;
+  PinStatus water_sensor_val = digitalRead(WATER_SENSOR_PIN);
+  water_sensor_val == LOW ? water_sensor = 1 : water_sensor = 0;
+  return water_sensor;
 }
 
 #endif

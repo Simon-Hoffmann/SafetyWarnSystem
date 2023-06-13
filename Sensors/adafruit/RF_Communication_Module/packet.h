@@ -5,7 +5,7 @@
 #define PACKET_H_
 
 enum PacketType : uint8_t{
-  CONNECT = 0,
+  CONNECT = 1,
   CONNACK,
   UNDEFINED,
   ACK,

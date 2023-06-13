@@ -24,6 +24,7 @@
 const uint8_t BUTTON_PRESS_PIN = 13;
 volatile uint8_t sensorID = 0;
 volatile uint8_t baseID = 0;
+const int Reset = 14;
 																														
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
@@ -61,6 +62,7 @@ void sensor_init(void){
   led_init();
 
   #ifdef DEBUG
+  Serial.println("");
   Serial.println("Sensor initialization success");
   #endif
 
@@ -95,26 +97,35 @@ void sensor_connectBase(void){
   while(!connected){
     if(rfm_send(&packet)){
       connected = true;
-      sensorID = packet.idSensor;
+      sensorID = packet.data[0];
       baseID = packet.idBase;
-    }
-    #ifdef DEBUG
-    Serial.println("Connection to base station could not be established, trying again in 1min");
-    #endif
-    #ifdef GAS_SENSOR
-    //The gas sensor should still be able to have its normal function of detection even when not connected with the base station
+    }else{
+      #ifdef DEBUG
+        Serial.println("Connection to base station could not be established, trying again in 1min");
+      #endif
+      #ifdef GAS_SENSOR
+      //The gas sensor should still be able to have its normal function of detection even when not connected with the base station
       int timer = 0;
       while(timer < 6000){
           gas_sensor_check_no_connection();
+          sensor_button_pressed();
           delay(10);
           timer++;
       }
       
-    #else
-      delay(60000);
-    #endif
+      #else
+      int timer = 0;
+      while(timer < 6000){
+          sensor_button_pressed();
+          delay(10);
+          timer++;
+      }
+      #endif
+    }
   }
-
+  #ifdef DEBUG
+    Serial.println("Successful connection to Base station");
+  #endif
 }
 
 /**
@@ -125,29 +136,39 @@ void sensor_connectBase(void){
 */
 void sensor_task(void){
   static uint32_t lastDataSent_s = 0;
+  static uint32_t sendTimeout = 0;
 
   /*---- Check sensor values for warnings ----*/
+
 
   #ifdef GAS_SENSOR
   if(gas_sensor_check()){
     lastDataSent_s = 0;
+    sendTimeout = 50000;
   }
   #endif
 
   #ifdef WATER_SENSOR
   if(water_sensor_check()){
     lastDataSent_s = 0;
+    sendTimeout = 50000;
   }
   #endif
 
   #ifdef DOOR_SENSOR
   if(door_sensor_check()){
     lastDataSent_s = 0;
+    sendTimeout = 50000;
   }
   #endif
 
   /*---- Button press check ----*/
-  sensor_button_pressed();
+  while(sendTimeout > 0){
+    sensor_button_pressed();
+    delay(1);
+    sendTimeout--;
+  }
+  
 
     /*---- Send data every 10min ----*/
   if(lastDataSent_s >= 600){
@@ -190,7 +211,6 @@ void sensor_button_pressed(void){
     }
 }
 
-void(*resetFunc)(void) = 0;
 
 /**
 *	Resets the variables of sensor and base station ID in flash and restarts the microcontroller
@@ -199,6 +219,9 @@ void(*resetFunc)(void) = 0;
 *	@return none
 */
 void sensor_reset(void){
-  resetFunc();
+  #ifdef DEBUG
+    Serial.println("Sensor reset");
+  #endif
+  digitalWrite(Reset, LOW);
 }
 

@@ -81,27 +81,39 @@ bool rfm_send(swsPacket* packet){
     count++;
 
     #ifdef DEBUG
-    Serial.println("Sending Length:"); 
-    Serial.println(sendLength); 
+    Serial.print("Sending packet with length: "); Serial.println(sendLength); 
+    Serial.print("Data: "); 
+    for(int i = 0; i < sendLength; i++){
+      char str[20];
+      sprintf(str, "%d ", payload[i]);
+      Serial.print(str); 
+    }
+    Serial.println(""); 
     #endif
 
     rf69.send((uint8_t *)payload, sendLength);
     rf69.waitPacketSent();
 
-    if (rf69.waitAvailableTimeout(10)) {
+    if (rf69.waitAvailableTimeout(100)) {
       // Should be a reply message for us now
       if (rf69.recv(buf, &len)) {
         packet_deserializeData(&receiveData, buf, len);
 
         #ifdef DEBUG
-        Serial.print("Got a reply: ");
-        Serial.println((char*)buf);
+          Serial.print("Got a reply with length: "); Serial.println(len); 
+          Serial.print("Data: "); 
+          for(int i = 0; i < len; i++){
+            char str[20];
+            sprintf(str, "%d ", buf[i]);
+            Serial.print(str); 
+          }
+          Serial.println(""); 
         #endif
-
-        switch(packet->packetType){
+        switch(receiveData.packetType){
           case ACK:
           case CONNACK:
             *packet = receiveData;
+            return true;
             break;
           case DISCONNECT: 
             packet->packetType = ACK;
@@ -117,13 +129,13 @@ bool rfm_send(swsPacket* packet){
         }
       } 
     } 
-      if(count >= 10){
+    if(count >= 10){
         #ifdef DEBUG
         Serial.println("No reply received");
         #endif
 
         return false;
-      }
+     }
   }
 }
 

@@ -14,6 +14,8 @@
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
 #define VERSION  "1.0.0"
+const int Reset = 14;
+
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
@@ -25,9 +27,13 @@
 *	@return none
 */
 void setup(void) {
+  digitalWrite(Reset, HIGH);
+  delay(200);
+  pinMode(Reset, OUTPUT);
   #ifdef DEBUG
     Serial.begin(115200);
   #endif
+  
   #ifndef HARDWARE_DEBUG
   rfm_init();
   #endif

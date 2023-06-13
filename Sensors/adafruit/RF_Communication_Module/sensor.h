@@ -9,7 +9,7 @@
 
 /*Sensor types: GAS_SENSOR  WATER_SENSOR  DOOR_SENSOR*/
 
-#define DOOR_SENSOR
+#define WATER_SENSOR
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
