@@ -148,6 +148,36 @@ If the base station does not receive a packet after 15min, it sets the sensor st
 
 ## Program flow chart
 
+This flowchart is only for a rough overview and does not go into every specific detail. It is for a rough idea of how the sensors should operate.
+
+### Program start
+
+![Disconnect](/Docs/Images/ProgrammStart.png)
+
+### Connected with base station
+
+![Disconnect](/Docs/Images/Connected.png)
+
+### Ping
+
+![Disconnect](/Docs/Images/PingProgramm.png)
+
+### Sensor warning interrupt
+
+![Disconnect](/Docs/Images/Warning.png)
+
+### Reset button main sensor
+
+![Disconnect](/Docs/Images/Reset.png)
+
+### Reset button smoke sensor
+
+![Disconnect](/Docs/Images/SmokeReset.png)
+
+### Reset button main sensor
+
+![Disconnect](/Docs/Images/Reset.png)
+
 ## TODO
 
 The base station and website are projects from other students in my course, which are currently not in this repository
