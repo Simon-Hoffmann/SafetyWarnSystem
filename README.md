@@ -79,9 +79,9 @@ Before we could begin with the implementation of the sensors, we had to decide h
 
 *uint8_t
 Sensor Type: 
-1 - Water sensor
-2 - Smoke detector
-3 - Door sensor
+- 1 - Water sensor
+- 2 - Smoke detector
+- 3 - Door sensor
 
 ### Send data
 
@@ -117,7 +117,7 @@ If the sensor doesn’t receive a CONNACK after 10 tries it sleeps for 1 min.
 
 Sensor has ID: 15
 
-![ExistingConnection](/Docs/Images/ExistingConnection.png)
+![ExistingConnection](/Docs/Images/ExistingConnectiob.png)
 
 If the sensor doesn’t receive a CONNACK after 10 tries it sleeps for 1 min.
 
